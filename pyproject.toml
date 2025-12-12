@@ -10,6 +10,7 @@ dependencies = [
 
 [project.scripts]
 delete_empty_tifs = "ls2_overview.delete_empty_tifs:cli"
+create_synthetic_data = "ls2_overview.create_synthetic_ls2_data:cli"
 
 [build-system]
 requires = ["hatchling >= 1.26"]
