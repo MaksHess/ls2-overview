@@ -1,6 +1,6 @@
 # LS2-overview
 
-Small utility to visualize images at the microscope to make descisions about further processing early on.
+Small utility to visualize images at an LS2 microscope to make decisions about further processing early on.
 
 ## Installation
 
