@@ -14,7 +14,7 @@ conda activate ls2-overview
 Pip install the repo directly from github
 
 ```{bash}
-pip install git+...
+pip install git+https://github.com/MaksHess/ls2-overview.git
 ```
 
 ## Run the scripts
