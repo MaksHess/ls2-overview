@@ -5,11 +5,11 @@ import json
 import polars as pl
 
 experiment_root = Path(
-    r"N:\liberali\rawlanding\znascakova\20251209_105714_W1--singlecell--W2-W6--Day3--H2B-mg"
+    r"C:\Users\hessmax\Data\ls2_synthetic\experiment"
 )
 stack_settings_file = "Settings/STAGE_ZStackSettings.json"
 stack_pattern = re.compile(r"(?P<channel>\S+)_View(?P<view>\d)-T(?P<timepoint>\d+)")
-position_pattern = re.compile(r"(?P<position>\S+)_(?P<acquisition>\S+)")
+position_pattern = re.compile(r"(?P<position>[^_]+)_(?P<acquisition>[^_]+)(_(?P<projection>[^_]+))?")
 
 
 # %%
@@ -35,6 +35,7 @@ def parse_ls2_experiment(experiment_root: Path):
         schema={
             "position": pl.Utf8,
             "acquisition": pl.Utf8,
+            "projection": pl.Utf8,
             "channel": pl.Utf8,
             "view": pl.UInt8,
             "timepoint": pl.UInt16,
@@ -45,28 +46,20 @@ def parse_ls2_experiment(experiment_root: Path):
         pl.col("position")
         .str.split("-")
         .list.get(0)
-        .str.replace_all("\D", "")
+        .str.replace_all(r"\D", "")
         .cast(pl.UInt8)
         .alias("well_id"),
         pl.col("position")
         .str.split("-")
         .list.get(1)
-        .str.replace_all("\D", "")
+        .str.replace_all(r"\D", "")
         .cast(pl.UInt8)
         .alias("well_position_id"),
     )
 
 
 # %%
-acc = []
-for _ in range(10):
-    rel_path = path.relative_to(experiment_root)
-    components = {
-        **position_pattern.match(rel_path.parent.name).groupdict(),
-        **stack_pattern.match(rel_path.stem).groupdict(),
-        "path": path.as_posix(),
-    }
-    acc.append(components)
+parse_ls2_experiment(experiment_root)   
 
 # %%
 pl.DataFrame(
