@@ -4,6 +4,8 @@ import numpy as np
 from ngio import create_ome_zarr_from_array
 import zarr
 
+# TODO: remove temporary workaround for zarr issues on windows
+# see: https://github.com/zarr-developers/zarr-python/issues/3522
 zarr.config.set({"threading": {"max_workers": 1}})
 zarr.config.set({"async": {"concurrency": 1, "timeout": None}})
 
