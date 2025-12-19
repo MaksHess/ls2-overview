@@ -5,13 +5,14 @@ import tifffile
 from pathlib import Path
 import click
 
+
 @click.command()
 @click.argument("output_dir", type=str)
 def cli(output_dir: str):
     """OUTPUT_DIR: Path to output directory."""
     experiment_dir = Path(output_dir)
 
-    t, z, y, x = 30, 20, 512, 512  # z only for naming, writing max-projections
+    t, z, y, x = 10, 20, 512, 512  # z only for naming, writing max-projections
 
     positions = ["w1-p3", "w2-p1", "w2-p2", "w3-p1", "w3-p2"]
     channels = ["mG", "H2B"]
@@ -42,7 +43,7 @@ def cli(output_dir: str):
         for j, view in enumerate(views):
             print(f"  View: {view}")
             arr = opensimplex.noise4array(
-                np.linspace(0 + j*view_shift, xy_extent + j*view_shift, x),
+                np.linspace(0 + j * view_shift, xy_extent + j * view_shift, x),
                 np.linspace(0, xy_extent, y),
                 np.linspace(0, c_extent, c),
                 np.linspace(0, t_extent, t),
