@@ -1,7 +1,7 @@
 from pathlib import Path
 import click
 
-EMPTY_TIF_SIZE = 100  # n bytes below which a file is empty (header takes some space).
+EMPTY_TIF_SIZE = 64  # n bits below which a file is empty (header takes some space).
 N_PRINT_LINES = 10
 
 @click.command()
@@ -27,8 +27,8 @@ def cli(root_path: str, no_dry_run: bool):
 
 def detect_empty_tifs(root_path: Path) -> list[Path]:
     empty_tifs = []
-    for path in root_path.rglob("*.tif"):
-        if path.stat().st_size < EMPTY_TIF_SIZE:
+    for path in sorted(root_path.rglob("*.tif")):
+        if path.stat().st_size <= EMPTY_TIF_SIZE:
             empty_tifs.append(path)
     return empty_tifs
 
