@@ -65,7 +65,7 @@ def parse_ls2_experiment(experiment_root: Path):
 
 
 # %%
-df = parse_ls2_experiment(experiment_root)
+df, df_projs = parse_ls2_experiment(experiment_root)
 
 # %%
 print(
