@@ -1,13 +1,14 @@
-from pathlib import Path
 import re
-import polars as pl
 import sys
+from pathlib import Path
+
+import polars as pl
 
 STACK_PATTERN = re.compile(
     r"(?P<channel>\S+)_(?P<view>View(?P<view_id>\d))-T(?P<t_id>\d+)"
 )
 POSITION_PATTERN = re.compile(
-    r"(?P<position>[^_]+)_(?P<stack>[^_]+)(_(?P<projection>[^_]+))?"
+    r"(?P<acquisition>(?P<position>[^_]+)_(?P<stack>[^_]+))(_(?P<projection>[^_]+))?"
 )
 
 
@@ -37,6 +38,7 @@ def parse_ls2_experiment(experiment_root: Path):
     df = pl.DataFrame(
         acc,
         schema={
+            "acquisition": pl.String,
             "position": pl.String,
             "stack": pl.String,
             "projection": pl.String,
@@ -49,6 +51,7 @@ def parse_ls2_experiment(experiment_root: Path):
         },
         strict=False,
     ).with_columns(
+        pl.col("t_id") - pl.col("t_id").min(),
         pl.col("position")
         .str.split("-")
         .list.get(0)
