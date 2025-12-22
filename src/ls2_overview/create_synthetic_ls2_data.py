@@ -51,7 +51,7 @@ def cli(output_dir: str):
             for k, channel in enumerate(channels):
                 print(f"    Channel: {channel}")
                 arr_ch = arr[:, k, :, :]
-                for m, arr_ch_t in enumerate(arr_ch):
+                for m, arr_ch_t in enumerate(arr_ch, start=1):
                     print(f"      Timepoint: {m}")
                     filename = f"{channel}_{view}-T{m:04d}.tif"
                     tifffile.imwrite(position_dir / filename, arr_ch_t)
