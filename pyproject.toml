@@ -6,13 +6,14 @@ requires-python = ">=3.11"
 dependencies = ["click>=8.1", "polars", "opensimplex", "tifffile", "zarr"]
 
 [project.optional-dependencies]
-dev = ["napari", "ipykernel"]
+dev = ["napari", "ipykernel", "pyqt6"]
 
 [project.scripts]
 delete_empty_tifs = "ls2_overview.delete_empty_tifs:cli"
 create_synthetic_data = "ls2_overview.create_synthetic_ls2_data:cli"
 copy_sample_ls2_dataset = "ls2_overview.copy_sample_ls2_dataset:main"
 compute_thumbnails = "ls2_overview.compute_thumbnails:main"
+visualize_thumbnails = "ls2_overview.visualize_thumbnails:main"
 
 [build-system]
 requires = ["hatchling >= 1.26"]
