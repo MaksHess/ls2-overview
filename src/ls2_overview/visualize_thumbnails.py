@@ -17,7 +17,8 @@ GRID_MARGIN = 1.1
 
 @click.command()
 @click.argument("path", type=str)
-def main(path: str):
+@click.option("-c", "--channel_ids", type=int, multiple=True, default=())
+def main(path: str, channel_ids: tuple[int]):
     import napari
     import ngff_zarr as nz
 
@@ -45,6 +46,7 @@ def main(path: str):
             ngff_img.translation["y"] += iy * dy
             img = to_napari(
                 ngff_img,
+                channel_ids=channel_ids,
                 colormap=VIEW_COLORS[j],
                 name=f"{position.name}__{view.stem}",
                 blending="additive",
@@ -57,11 +59,21 @@ def main(path: str):
     viewer.show(block=True)
 
 
-def to_napari(img: "nz.NgffImage", **kwargs):
-    return {
-        "data": img.data.compute(),
-        "scale": [v for k, v in img.scale.items() if k in PHYSICAL_DIMS],
-        "translate": [v for k, v in img.translation.items() if k in PHYSICAL_DIMS],
-        "channel_axis": None if "c" not in img.dims else img.dims.index("c"),
-        **kwargs,
-    }
+def to_napari(img: "nz.NgffImage", channel_ids: tuple[int] = (), **kwargs):
+    if channel_ids == ():
+        return {
+            "data": img.data.compute(),
+            "scale": [v for k, v in img.scale.items() if k in PHYSICAL_DIMS],
+            "translate": [v for k, v in img.translation.items() if k in PHYSICAL_DIMS],
+            "channel_axis": None if "c" not in img.dims else img.dims.index("c"),
+            **kwargs,
+        }
+    else:
+        assert img.dims.index("c") == 1, "Only arrays of shape ('t', 'c', ...) support `channel_ids`"
+        return {
+            "data": img.data[:, list(channel_ids), ...].compute(),
+            "scale": [v for k, v in img.scale.items() if k in PHYSICAL_DIMS],
+            "translate": [v for k, v in img.translation.items() if k in PHYSICAL_DIMS],
+            "channel_axis": None if "c" not in img.dims else img.dims.index("c"),
+            **kwargs,
+        }
