@@ -1,14 +1,14 @@
-# %%
+import sys
 from pathlib import Path
+
 import numpy as np
 from ngio import create_ome_zarr_from_array
-import sys
-
 
 # TODO: remove temporary workaround for zarr issues on windows
 # see: https://github.com/zarr-developers/zarr-python/issues/3522
 if sys.platform.startswith("win"):
     import zarr
+
     zarr.config.set({"threading": {"max_workers": 1}})
     zarr.config.set({"async": {"concurrency": 1, "timeout": None}})
 

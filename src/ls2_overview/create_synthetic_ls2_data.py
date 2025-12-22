@@ -1,9 +1,10 @@
 import itertools
-import opensimplex
-import numpy as np
-import tifffile
 from pathlib import Path
+
 import click
+import numpy as np
+import opensimplex
+import tifffile
 
 
 @click.command()

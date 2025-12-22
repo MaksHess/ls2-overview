@@ -1,8 +1,10 @@
 from pathlib import Path
+
 import click
 
 EMPTY_TIF_SIZE = 64  # n bits below which a file is empty (header takes some space).
 N_PRINT_LINES = 10
+
 
 @click.command()
 @click.argument("root_path", type=str)
@@ -35,9 +37,9 @@ def detect_empty_tifs(root_path: Path) -> list[Path]:
 
 def print_files(file_paths: list[Path], n_lines: int = N_PRINT_LINES):
     if len(file_paths) > n_lines:
-        for path in file_paths[:n_lines-2]:
+        for path in file_paths[: n_lines - 2]:
             click.echo(f" - {path}")
-        click.echo(f" ... and {len(file_paths) - (n_lines-3)} more files.")
+        click.echo(f" ... and {len(file_paths) - (n_lines - 3)} more files.")
         click.echo(f" - {file_paths[-1]}")
     else:
         for path in file_paths:

@@ -1,7 +1,8 @@
-from pathlib import Path
-import shutil
-from tqdm import tqdm
 import re
+import shutil
+from pathlib import Path
+
+from tqdm import tqdm
 
 TIMEPOINTS = range(110, 114)
 POSITIONS = ["w1-poisition3_1um-150pls", "w3-poisition1_1um-150pls"]
