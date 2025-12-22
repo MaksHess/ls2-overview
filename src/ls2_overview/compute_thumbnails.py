@@ -11,7 +11,6 @@ from ls2_overview.parse_ls2_experiment import parse_ls2_experiment
 COMPRESSION_CODEC = BloscCodec()  # Default: 'zstd', clevel=5
 
 
-# TODO: Currently copies the full-res max-projections into the zarr array.
 @click.command()
 @click.argument("path", type=str)
 @click.option(
@@ -20,7 +19,7 @@ COMPRESSION_CODEC = BloscCodec()  # Default: 'zstd', clevel=5
 @click.option("-xy", "--scale-xy", default=1.0, help="Pixel scale x & y.")
 def main(path: str, down_sample_factor: int, scale_xy: float):
     experiment_path = Path(path)
-    output_path = experiment_path / "thumbnails"
+    output_path = experiment_path / "_thumbnails"
     _, df_projections = parse_ls2_experiment(experiment_path)
     for (acquisition, view), df in df_projections.group_by(
         "acquisition", "view", maintain_order=True
@@ -46,9 +45,10 @@ def main(path: str, down_sample_factor: int, scale_xy: float):
             chunks=(1, 1, None, None),
             # zarr_store_kwargs={"chunks": (1, 1, None, None)},
         )
+        ngff_thumbnail = ngff_multiscales.images[-1]
         nz.to_ngff_zarr(
             store=out_name,
-            multiscales=ngff_multiscales,
+            multiscales=nz.to_multiscales(ngff_thumbnail, scale_factors=1024),
             version="0.5",
             compressors=[COMPRESSION_CODEC],
         )

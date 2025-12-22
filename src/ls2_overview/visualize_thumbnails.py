@@ -22,7 +22,7 @@ def main(path: str):
     import ngff_zarr as nz
 
     experiment_path = Path(path)
-    positions = list((experiment_path / "thumbnails").glob("*"))
+    positions = list((experiment_path / "_thumbnails").glob("*"))
 
     n_positions = len(positions)
 
