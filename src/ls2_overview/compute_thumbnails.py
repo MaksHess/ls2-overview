@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 
 import click
@@ -9,8 +10,21 @@ from zarr.codecs import BloscCodec
 
 from ls2_overview.parse_ls2_experiment import parse_ls2_experiment
 
-COMPRESSION_CODEC = BloscCodec()  # Default: 'zstd', clevel=5
+if sys.platform.startswith("win"):
+    import zarr
 
+    zarr.config.set({"threading": {"max_workers": 1}})
+    zarr.config.set({"async": {"concurrency": 1, "timeout": None}})
+
+ZARR_V05 = {
+    "compressors": [BloscCodec()],  # Default: 'zstd', clevel=5
+    "version": "0.5",
+}
+
+ZARR_V04 = {
+    # "compression": "zstd",
+    "version": "0.4"
+}
 
 @click.command()
 @click.argument("path", type=str)
@@ -74,6 +88,5 @@ def main(path: str, down_sample_factor: int, scale_xy: float, channels: str):
         nz.to_ngff_zarr(
             store=out_name,
             multiscales=nz.to_multiscales(ngff_thumbnail, scale_factors=1024),
-            version="0.5",
-            compressors=[COMPRESSION_CODEC],
+            **ZARR_V05,
         )
