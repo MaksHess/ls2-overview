@@ -13,7 +13,7 @@ experiment_path = Path(r"C:\Users\hessmax\Data\synthetic_data\exp")
 PHYSICAL_DIMS = ("t", "z", "y", "x")
 VIEW_COLORS = ["green", "magenta"]
 GRID_MARGIN = 1.1
-
+CONTRAST_LIMITS = (100, 2000)
 
 @click.command()
 @click.argument("path", type=str)
@@ -75,5 +75,6 @@ def to_napari(img: "nz.NgffImage", channel_ids: tuple[int] = (), **kwargs):
             "scale": [v for k, v in img.scale.items() if k in PHYSICAL_DIMS],
             "translate": [v for k, v in img.translation.items() if k in PHYSICAL_DIMS],
             "channel_axis": None if "c" not in img.dims else img.dims.index("c"),
+            "contrast_limits": [CONTRAST_LIMITS for _ in range(len(channel_ids))],
             **kwargs,
         }
