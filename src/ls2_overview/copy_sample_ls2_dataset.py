@@ -4,12 +4,12 @@ from pathlib import Path
 
 from tqdm import tqdm
 
-TIMEPOINTS = range(110, 114)
+TIMEPOINTS = range(108, 116)
 POSITIONS = ["w1-poisition3_1um-150pls", "w3-poisition1_1um-150pls"]
 SOURCE_DIR = Path(
     r"N:\liberali\rawlanding\znascakova\20251209_105714_W1--singlecell--W2-W6--Day3--H2B-mg"
 )
-TARGET_DIR = Path(r"N:\liberali\rawlanding\hessmax\20251212_1200_SampleExperiment2")
+TARGET_DIR = Path(r"N:\liberali\rawlanding\hessmax\20251212_1200_SampleExperiment")
 RESET_TIME_INDEX = True
 T_PATTERN = re.compile(r"-T(\d{4})")
 
