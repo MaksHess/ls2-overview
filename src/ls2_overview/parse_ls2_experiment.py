@@ -52,18 +52,6 @@ def parse_ls2_experiment(experiment_root: Path):
         strict=False,
     ).with_columns(
         pl.col("t_id") - pl.col("t_id").min(),
-        pl.col("position")
-        .str.split("-")
-        .list.get(0)
-        .str.replace_all(r"\D", "")
-        .cast(pl.UInt8)
-        .alias("well_id"),
-        pl.col("position")
-        .str.split("-")
-        .list.get(1)
-        .str.replace_all(r"\D", "")
-        .cast(pl.UInt8)
-        .alias("well_position_id"),
     )
 
     df_vols = df.filter(pl.col("projection").is_null())
