@@ -56,6 +56,7 @@ def main(path: str, channel_ids: tuple[int]):
     viewer = napari.Viewer()
     for img in imgs:
         viewer.add_image(**img)
+    viewer.reset_view()
     viewer.show(block=True)
 
 
