@@ -13,7 +13,7 @@ def cli(output_dir: str):
     """OUTPUT_DIR: Path to output directory."""
     experiment_dir = Path(output_dir)
 
-    t, z, y, x = 10, 20, 512, 512  # z only for naming, writing max-projections
+    t, z, y, x = 10, 20, 128, 128  # z only for naming, writing max-projections
 
     positions = ["w1-p3", "w2-p1", "w2-p2", "w3-p1", "w3-p2"]
     channels = ["mG", "H2B"]
