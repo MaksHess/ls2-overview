@@ -3,10 +3,10 @@ name = "ls2_overview"
 version = "0.1.0"
 description = "Simple tool for early visualization of LS2 experiments."
 requires-python = ">=3.11"
-dependencies = ["click>=8.1", "polars", "opensimplex", "tifffile", "ngff_zarr"]
+dependencies = ["click>=8.1", "polars", "opensimplex", "tifffile", "ngff_zarr", "napari", "pyqt6"]
 
 [project.optional-dependencies]
-dev = ["napari", "ipykernel", "pyqt6"]
+dev = ["ipykernel"]
 
 [project.scripts]
 delete_empty_tifs = "ls2_overview.delete_empty_tifs:cli"
