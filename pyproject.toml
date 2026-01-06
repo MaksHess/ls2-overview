@@ -14,6 +14,7 @@ create_synthetic_data = "ls2_overview.create_synthetic_ls2_data:cli"
 copy_sample_ls2_dataset = "ls2_overview.copy_sample_ls2_dataset:main"
 compute_thumbnails = "ls2_overview.compute_thumbnails:main"
 visualize_thumbnails = "ls2_overview.visualize_thumbnails:main"
+save_thumbnails = "ls2_overview.save_thumbnails:main"
 
 [build-system]
 requires = ["hatchling >= 1.26"]
