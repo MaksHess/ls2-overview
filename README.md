@@ -11,7 +11,7 @@ conda create --name ls2-overview python=3.12 -y
 conda activate ls2-overview
 ```
 
-Pip install the repo directly from github
+Pip install the repo from github, make sure you have [git](https://git-scm.com/) installed.
 
 ```{bash}
 pip install git+https://github.com/MaksHess/ls2-overview.git
