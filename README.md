@@ -7,8 +7,7 @@ Small utility to visualize images at an LS2 microscope to make decisions about f
 Optional but recommended: create a new conda environment.
 
 ```{bash}
-conda create --name ls2-overview python=3.12 -y
-conda activate ls2-overview
+conda create --name ls2-overview python=3.12 -y && conda activate ls2-overview
 ```
 
 Pip install the repo from github, make sure you have [git](https://git-scm.com/) installed.
