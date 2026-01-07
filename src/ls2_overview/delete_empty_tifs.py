@@ -1,6 +1,6 @@
 from pathlib import Path
 
-import click
+from rich_click import click
 
 EMPTY_TIF_SIZE = 64  # n bits below which a file is empty (header takes some space).
 N_PRINT_LINES = 10

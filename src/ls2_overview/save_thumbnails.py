@@ -2,7 +2,7 @@ import math
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-import click
+import rich_click as click
 
 if TYPE_CHECKING:
     import ngff_zarr as nz
@@ -18,10 +18,10 @@ CONTRAST_LIMITS = (100, 2000)
 
 @click.command()
 @click.argument("path", type=str)
-@click.option("-c", "--channel_ids", type=int, multiple=True, default=())
-@click.option("-fps", "--frames_per_second", type=int, default=20)
-@click.option("-o", "--out_file", type=str, default="_thumbnails.mov")
-@click.option("--frames_last_timepoint", type=int, default=5)
+@click.option("-c", "--channel_ids", type=int, multiple=True, default=(), help="Channel indices to visualize. E.g., `-c 0 -c 1`")
+@click.option("-fps", "--frames_per_second", type=int, default=20, help="FPS of the resulting movie.", show_default=True)
+@click.option("-o", "--out_file", type=str, default="_thumbnails/thumbnails.mov", help="Relative path of the output movie.", show_default=True)
+@click.option("--frames_last_timepoint", type=int, default=5, help="Show the last timepoint for additional frames.", show_default=True)
 def main(
     path: str,
     channel_ids: tuple[int],
@@ -29,6 +29,7 @@ def main(
     out_file: str,
     frames_last_timepoint: int,
 ):
+    """Export a movie of the thumbnails grid for quick inspection."""
     import napari
     import ngff_zarr as nz
     from napari_animation import Animation

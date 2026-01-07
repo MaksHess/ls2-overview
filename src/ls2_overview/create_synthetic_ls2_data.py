@@ -1,7 +1,7 @@
 import itertools
 from pathlib import Path
 
-import click
+from rich_click import click
 import numpy as np
 import opensimplex
 import tifffile

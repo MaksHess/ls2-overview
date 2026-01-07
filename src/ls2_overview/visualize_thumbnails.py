@@ -2,7 +2,7 @@ import math
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-import click
+import rich_click as click
 
 if TYPE_CHECKING:
     import ngff_zarr as nz
@@ -17,8 +17,9 @@ CONTRAST_LIMITS = (100, 2000)
 
 @click.command()
 @click.argument("path", type=str)
-@click.option("-c", "--channel_ids", type=int, multiple=True, default=())
+@click.option("-c", "--channel_ids", type=int, multiple=True, default=(), help="Channel indices to visualize. E.g., `-c 0 -c 1`")
 def main(path: str, channel_ids: tuple[int]):
+    """Visualize thumbnails in a napari viewer."""
     import napari
     import ngff_zarr as nz
 

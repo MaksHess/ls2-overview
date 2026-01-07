@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-import click
+import rich_click as click
 import dask.array as da
 import ngff_zarr as nz
 import polars as pl
@@ -29,17 +29,20 @@ ZARR_V04 = {
 @click.command()
 @click.argument("path", type=str)
 @click.option(
-    "-ds", "--down-sample-factor", default=8, help="Down sample factor for thumbnails."
+    "-ds", "--down-sample-factor", default=8, help="Down sample factor.", show_default=True,
 )
-@click.option("-xy", "--scale-xy", default=1.0, help="Pixel scale x & y.")
 @click.option(
     "-c",
     "--channels",
     default=("*",),
     multiple=True,
-    help="Channels to use in thumbnails.",
+    help="Channels to use in thumbnails. Select multiple using `-c H2B -c mG`.",
+    show_default=True,
 )
+@click.option("-xy", "--scale-xy", default=1.0, help="Pixel scale.", show_default=True)
+
 def main(path: str, down_sample_factor: int, scale_xy: float, channels: str):
+    "Compute thumbnails & store them to a directory `_thumbnails`."
     experiment_path = Path(path)
     output_path = experiment_path / "_thumbnails"
     _, df_projections = parse_ls2_experiment(experiment_path)
