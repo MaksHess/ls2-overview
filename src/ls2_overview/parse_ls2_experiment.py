@@ -1,14 +1,21 @@
+# %%
 import re
 import sys
 from pathlib import Path
+import json
+from packaging.version import Version, parse
 
 import polars as pl
 
-STACK_PATTERN = re.compile(
+STACK_PATTERN_V2 = re.compile(
     r"(?P<channel>\S+)_(?P<view>View(?P<view_id>\d))-T(?P<t_id>\d+)"
 )
-POSITION_PATTERN = re.compile(
+POSITION_PATTERN_V2 = re.compile(
     r"(?P<acquisition>(?P<position>[^_]+)_(?P<stack>[^_]+))(_(?P<projection>[^_]+))?"
+)
+
+STACK_AND_POSITION_PATTERN_V3 = re.compile(
+    r"^(?P<acquisition>(?P<position>[^_]+)_(?P<stack>[^_]+))(_Optional\/(?P<projection>[^_]+))?\/[Tt](?P<t_id>\d+)_(?P<channel>[^_]+)_(?P<view>View(?P<view_id>\d)).tif$"
 )
 
 
@@ -23,13 +30,24 @@ def main():
     sys.exit(0)
 
 
-def parse_ls2_experiment(experiment_root: Path):
+def parse_ls2_experiment(experiment_root: Path | str):
+    experiment_root = Path(experiment_root)
+    version = parse_ls2_version(experiment_root)
+    if version.major == 2:
+        return parse_ls2_experiment_v2(experiment_root)
+    elif version.major == 3:
+        return parse_ls2_experiment_v3(experiment_root)
+    else:
+        raise NotImplementedError("Unsupported version {version}.")
+
+
+def parse_ls2_experiment_v2(experiment_root: Path):
     acc = []
     for path in experiment_root.rglob("*.tif"):
         rel_path = path.relative_to(experiment_root)
         components = {
-            **POSITION_PATTERN.match(rel_path.parent.name).groupdict(),
-            **STACK_PATTERN.match(rel_path.stem).groupdict(),
+            **POSITION_PATTERN_V2.match(rel_path.parent.name).groupdict(),
+            **STACK_PATTERN_V2.match(rel_path.stem).groupdict(),
             "path": path.as_posix(),
             "tif_file_size": path.stat().st_size,
         }
@@ -59,5 +77,50 @@ def parse_ls2_experiment(experiment_root: Path):
     return df_vols, df_projs
 
 
+def parse_ls2_experiment_v3(experiment_root: Path):
+    acc = []
+    for path in experiment_root.rglob("*.tif"):
+        rel_path = path.relative_to(experiment_root)
+        components = {
+            **STACK_AND_POSITION_PATTERN_V3.match(rel_path.as_posix()).groupdict(),
+            "path": path.as_posix(),
+            "tif_file_size": path.stat().st_size,
+        }
+        acc.append(components)
+
+    df = pl.DataFrame(
+        acc,
+        schema={
+            "acquisition": pl.String,
+            "position": pl.String,
+            "stack": pl.String,
+            "projection": pl.String,
+            "channel": pl.String,
+            "view": pl.String,
+            "view_id": pl.UInt8,
+            "t_id": pl.UInt16,
+            "path": pl.String,
+            "tif_file_size": pl.UInt64,
+        },
+        strict=False,
+    ).with_columns(
+        pl.col("t_id") - pl.col("t_id").min(),
+    )
+
+    df_vols = df.filter(pl.col("projection").is_null())
+    df_projs = df.filter(pl.col("projection").is_not_null())
+    return df_vols, df_projs
+
+
+def parse_ls2_version(experiment_root: Path) -> Version:
+    dir_settings = experiment_root / "Settings"
+    settings_file = next(dir_settings.glob("*.json"))
+    with open(settings_file) as f:
+        settings = json.load(f)
+    version = parse(settings["Version"])
+    return version
+
+
+# %%
 if __name__ == "__main__":
     main()

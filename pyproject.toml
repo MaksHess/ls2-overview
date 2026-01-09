@@ -3,7 +3,17 @@ name = "ls2_overview"
 version = "0.1.0"
 description = "Simple tool for early visualization of LS2 experiments."
 requires-python = ">=3.11"
-dependencies = ["click>=8.1", "rich-click", "polars", "opensimplex", "tifffile", "ngff_zarr", "napari", "pyqt6"]
+dependencies = [
+    "click>=8.1",
+    "rich-click",
+    "polars",
+    "opensimplex",
+    "tifffile",
+    "ngff_zarr",
+    "napari",
+    "pyqt6",
+    "packaging",
+]
 
 [project.optional-dependencies]
 dev = ["ipykernel"]
