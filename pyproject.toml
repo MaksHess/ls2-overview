@@ -13,6 +13,7 @@ dependencies = [
     "napari",
     "pyqt6",
     "packaging",
+    "imagecodecs",
 ]
 
 [project.optional-dependencies]
