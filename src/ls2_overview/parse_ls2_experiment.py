@@ -53,9 +53,9 @@ def parse_ls2_experiment_v2(experiment_root: Path):
         if stack_mo is None:
             stack_mo = STACK_PATTERN_V2B.match(rel_path.stem)
         if position_mo is None:
-            warnings.warn("Folder did not match regex: {rel_path.parent}")
+            warnings.warn(f"Folder did not match regex: {rel_path.parent}")
         elif stack_mo is None:
-            warnings.warn("Filename did not match regex: {rel_path.stem}")
+            warnings.warn(f"Filename did not match regex: {rel_path.stem}")
         else:
             components = {
                 **position_mo.groupdict(),
