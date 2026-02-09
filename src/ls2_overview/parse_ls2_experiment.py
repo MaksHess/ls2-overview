@@ -1,10 +1,11 @@
+import json
 import re
 import sys
+import warnings
 from pathlib import Path
-import json
-from packaging.version import Version, parse
 
 import polars as pl
+from packaging.version import Version, parse
 
 STACK_PATTERN_V2 = re.compile(
     r"(?P<channel>\S+)_(?P<view>View(?P<view_id>\d))-[Tt](?P<t_id>\d+)"
@@ -48,9 +49,9 @@ def parse_ls2_experiment_v2(experiment_root: Path):
     for path in experiment_root.rglob("*.tif"):
         rel_path = path.relative_to(experiment_root)
         position_mo = POSITION_PATTERN_V2.match(rel_path.parent.name)
-        if position_mo is None:
-            position_mo = POSITION_PATTERN_V2B.match(rel_path.parent.name)
         stack_mo = STACK_PATTERN_V2.match(rel_path.stem)
+        if stack_mo is None:
+            stack_mo = STACK_PATTERN_V2B.match(rel_path.stem)
         if position_mo is None:
             warnings.warn("Folder did not match regex: {rel_path.parent}")
         elif stack_mo is None:
