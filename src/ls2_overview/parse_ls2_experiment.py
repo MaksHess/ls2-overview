@@ -7,7 +7,10 @@ from packaging.version import Version, parse
 import polars as pl
 
 STACK_PATTERN_V2 = re.compile(
-    r"(?P<channel>\S+)_(?P<view>View(?P<view_id>\d))-T(?P<t_id>\d+)"
+    r"(?P<channel>\S+)_(?P<view>View(?P<view_id>\d))-[Tt](?P<t_id>\d+)"
+)
+STACK_PATTERN_V2B = re.compile(
+    r"[Tt](?P<t_id>\d+)_(?P<channel>\S+)_(?P<view>View(?P<view_id>\d))"
 )
 POSITION_PATTERN_V2 = re.compile(
     r"(?P<acquisition>(?P<position>[^_]+)_(?P<stack>[^_]+))(_(?P<projection>[^_]+))?"
@@ -44,13 +47,22 @@ def parse_ls2_experiment_v2(experiment_root: Path):
     acc = []
     for path in experiment_root.rglob("*.tif"):
         rel_path = path.relative_to(experiment_root)
-        components = {
-            **POSITION_PATTERN_V2.match(rel_path.parent.name).groupdict(),
-            **STACK_PATTERN_V2.match(rel_path.stem).groupdict(),
-            "path": path.as_posix(),
-            "tif_file_size": path.stat().st_size,
-        }
-        acc.append(components)
+        position_mo = POSITION_PATTERN_V2.match(rel_path.parent.name)
+        if position_mo is None:
+            position_mo = POSITION_PATTERN_V2B.match(rel_path.parent.name)
+        stack_mo = STACK_PATTERN_V2.match(rel_path.stem)
+        if position_mo is None:
+            warnings.warn("Folder did not match regex: {rel_path.parent}")
+        elif stack_mo is None:
+            warnings.warn("Filename did not match regex: {rel_path.stem}")
+        else:
+            components = {
+                **POSITION_PATTERN_V2.match(rel_path.parent.name).groupdict(),
+                **STACK_PATTERN_V2.match(rel_path.stem).groupdict(),
+                "path": path.as_posix(),
+                "tif_file_size": path.stat().st_size,
+            }
+            acc.append(components)
 
     df = pl.DataFrame(
         acc,
