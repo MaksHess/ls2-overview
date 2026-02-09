@@ -58,8 +58,8 @@ def parse_ls2_experiment_v2(experiment_root: Path):
             warnings.warn("Filename did not match regex: {rel_path.stem}")
         else:
             components = {
-                **POSITION_PATTERN_V2.match(rel_path.parent.name).groupdict(),
-                **STACK_PATTERN_V2.match(rel_path.stem).groupdict(),
+                **position_mo.groupdict(),
+                **stack_mo.groupdict(),
                 "path": path.as_posix(),
                 "tif_file_size": path.stat().st_size,
             }
