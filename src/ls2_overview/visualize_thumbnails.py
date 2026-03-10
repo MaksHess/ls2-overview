@@ -15,9 +15,17 @@ VIEW_COLORS = ["green", "magenta"]
 GRID_MARGIN = 1.1
 CONTRAST_LIMITS = (100, 2000)
 
+
 @click.command()
 @click.argument("path", type=str)
-@click.option("-c", "--channel_ids", type=int, multiple=True, default=(), help="Channel indices to visualize. E.g., `-c 0 -c 1`")
+@click.option(
+    "-c",
+    "--channel_ids",
+    type=int,
+    multiple=True,
+    default=(),
+    help="Channel indices to visualize. E.g., `-c 0 -c 1`",
+)
 def main(path: str, channel_ids: tuple[int]):
     """Visualize thumbnails in a napari viewer."""
     import napari
@@ -71,7 +79,9 @@ def to_napari(img: "nz.NgffImage", channel_ids: tuple[int] = (), **kwargs):
             **kwargs,
         }
     else:
-        assert img.dims.index("c") == 1, "Only arrays of shape ('t', 'c', ...) support `channel_ids`"
+        assert img.dims.index("c") == 1, (
+            "Only arrays of shape ('t', 'c', ...) support `channel_ids`"
+        )
         return {
             "data": img.data[:, list(channel_ids), ...].compute(),
             "scale": [v for k, v in img.scale.items() if k in PHYSICAL_DIMS],
