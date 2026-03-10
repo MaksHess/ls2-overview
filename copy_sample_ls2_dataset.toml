@@ -1,0 +1,8 @@
+timepoints = [1, 21, 41, 61, 81, 101]
+positions = ["W1-P2", "W1-P4", "W2-P7"]
+stack_settings = ["GFP-mCherry"]
+source_dir = 'N:\rawlanding\znascakova\20260206_180051_JT-cPLA2i-SGTL1i-IIIa'
+target_dir = 'C:\Users\hessmax\Data\ls2\v2\SampleExperiment'
+reset_time_index = true
+t_pattern = 't(\d{4})'
+t_fstring = 't{0:04d}'
