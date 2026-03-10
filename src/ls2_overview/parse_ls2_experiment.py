@@ -1,10 +1,10 @@
+import json
 import re
 import sys
 from pathlib import Path
-import json
-from packaging.version import Version, parse
 
 import polars as pl
+from packaging.version import Version, parse
 
 STACK_PATTERN_V2 = re.compile(
     r"(?P<channel>\S+)_(?P<view>View(?P<view_id>\d))-T(?P<t_id>\d+)"
