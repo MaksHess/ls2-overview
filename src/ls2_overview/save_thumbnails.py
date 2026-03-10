@@ -7,9 +7,6 @@ import rich_click as click
 if TYPE_CHECKING:
     import ngff_zarr as nz
 
-experiment_path = Path(r"C:\Users\hessmax\Data\synthetic_data\exp")
-
-
 PHYSICAL_DIMS = ("t", "z", "y", "x")
 VIEW_COLORS = ["green", "magenta"]
 GRID_MARGIN = 1.1
@@ -18,10 +15,37 @@ CONTRAST_LIMITS = (100, 2000)
 
 @click.command()
 @click.argument("path", type=str)
-@click.option("-c", "--channel_ids", type=int, multiple=True, default=(), help="Channel indices to visualize. E.g., `-c 0 -c 1`")
-@click.option("-fps", "--frames_per_second", type=int, default=20, help="FPS of the resulting movie.", show_default=True)
-@click.option("-o", "--out_file", type=str, default="_thumbnails/thumbnails.mov", help="Relative path of the output movie.", show_default=True)
-@click.option("--frames_last_timepoint", type=int, default=5, help="Show the last timepoint for additional frames.", show_default=True)
+@click.option(
+    "-c",
+    "--channel_ids",
+    type=int,
+    multiple=True,
+    default=(),
+    help="Channel indices to visualize. E.g., `-c 0 -c 1`",
+)
+@click.option(
+    "-fps",
+    "--frames_per_second",
+    type=int,
+    default=20,
+    help="FPS of the resulting movie.",
+    show_default=True,
+)
+@click.option(
+    "-o",
+    "--out_file",
+    type=str,
+    default="_thumbnails/thumbnails.mov",
+    help="Relative path of the output movie.",
+    show_default=True,
+)
+@click.option(
+    "--frames_last_timepoint",
+    type=int,
+    default=5,
+    help="Show the last timepoint for additional frames.",
+    show_default=True,
+)
 def main(
     path: str,
     channel_ids: tuple[int],
@@ -89,7 +113,7 @@ def main(
 
     _save_animation(
         viewer,
-        out_name=experiment_path/out_file,
+        out_name=experiment_path / out_file,
         fps=frames_per_second,
         n_frames_last_timepoint=frames_last_timepoint,
     )
