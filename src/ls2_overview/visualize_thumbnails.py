@@ -1,10 +1,9 @@
 import math
 from pathlib import Path
-from typing import TYPE_CHECKING
 
-from ls2_overview.utils import to_napari
 import rich_click as click
 
+from ls2_overview.utils import to_napari
 
 experiment_path = Path(r"C:\Users\hessmax\Data\synthetic_data\exp")
 
