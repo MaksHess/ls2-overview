@@ -28,13 +28,13 @@ def main(path: str, channel_ids: tuple[int]):
     import ngff_zarr as nz
 
     experiment_path = Path(path)
-    positions = list((experiment_path / "_thumbnails").glob("*"))
+    positions = list(
+        filter(lambda x: x.is_dir(), (experiment_path / "_thumbnails").glob("*"))
+    )
 
     n_positions = len(positions)
 
     grid_size = math.ceil(math.sqrt(n_positions))
-
-    dx = dy = 700
 
     imgs = []
     for i, position in enumerate(positions):
