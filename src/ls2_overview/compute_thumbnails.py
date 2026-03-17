@@ -8,7 +8,9 @@ import polars as pl
 from dask.array.image import imread
 from zarr.codecs import BloscCodec
 
-from ls2_overview.parse_ls2_experiment import parse_ls2_experiment
+# from ls2_overview.parse_ls2_experiment import parse_ls2_experiment
+from ls2_overview.parse_ls2_experiment_lightsheet_fusion import parse_ls2_experiment
+
 
 if sys.platform.startswith("win"):
     import zarr
@@ -26,10 +28,15 @@ ZARR_V04 = {
     "version": "0.4"
 }
 
+
 @click.command()
 @click.argument("path", type=str)
 @click.option(
-    "-ds", "--down-sample-factor", default=8, help="Down sample factor.", show_default=True,
+    "-ds",
+    "--down-sample-factor",
+    default=8,
+    help="Down sample factor.",
+    show_default=True,
 )
 @click.option(
     "-c",
@@ -40,11 +47,18 @@ ZARR_V04 = {
     show_default=True,
 )
 @click.option("-xy", "--scale-xy", default=1.0, help="Pixel scale.", show_default=True)
-
-def main(path: str, down_sample_factor: int, scale_xy: float, channels: str):
+@click.option(
+    "--ozx",
+    is_flag=True,
+    help="Wheter to write thumbnails as zipped zarr file (.ozx).",
+    show_default=True,
+)
+def main(path: str, down_sample_factor: int, scale_xy: float, channels: str, ozx: bool):
     "Compute thumbnails & store them to a directory `_thumbnails`."
     experiment_path = Path(path)
-    output_path = experiment_path / "_thumbnails"
+    thumbnails_path = experiment_path / "_thumbnails"
+    thumbnails_path.mkdir(exist_ok=True)
+
     _, df_projections = parse_ls2_experiment(experiment_path)
     if channels == ("*",):
         channels = tuple(df_projections["channel"].unique().sort())
@@ -58,7 +72,12 @@ def main(path: str, down_sample_factor: int, scale_xy: float, channels: str):
     for (acquisition, view), df in df_projections.group_by(
         "acquisition", "view", maintain_order=True
     ):
-        out_name = output_path / acquisition / f"{view}.ome.zarr"
+        if ozx:
+            out_name = f"{view}.ozx"
+        else:
+            out_name = f"{view}.ome.zarr"
+        out_path = thumbnails_path / acquisition / out_name
+        out_path.parent.mkdir(exist_ok=True)
         channel_arrs = []
         for (channel,), df_ch in df.sort(by=["channel_id", "t_id"]).group_by(
             "channel", maintain_order=True
@@ -89,7 +108,7 @@ def main(path: str, down_sample_factor: int, scale_xy: float, channels: str):
         )
         ngff_thumbnail = ngff_multiscales.images[-1]
         nz.to_ngff_zarr(
-            store=out_name,
+            store=out_path,
             multiscales=nz.to_multiscales(ngff_thumbnail, scale_factors=1024),
             **ZARR_V05,
         )
