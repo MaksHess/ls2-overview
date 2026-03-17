@@ -32,6 +32,14 @@ MANIFEST
 *.manifest
 *.spec
 
+# Claude code
+CLAUDE.md
+
+# UV lock file
+uv.lock
+
+
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
