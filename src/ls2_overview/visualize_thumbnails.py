@@ -5,13 +5,12 @@ from typing import TYPE_CHECKING
 from ls2_overview.utils import to_napari
 import rich_click as click
 
-if TYPE_CHECKING:
-    import ngff_zarr as nz
 
 experiment_path = Path(r"C:\Users\hessmax\Data\synthetic_data\exp")
 
 VIEW_COLORS = ["green", "magenta"]
 GRID_MARGIN = 1.1
+CONTRAST_LIMITS = (100, 2000)
 
 
 @click.command()
@@ -57,6 +56,7 @@ def main(path: str, channel_ids: tuple[int]):
                 colormap=VIEW_COLORS[j],
                 name=f"{position.name}__{view.stem}",
                 blending="additive",
+                contrast_limits=CONTRAST_LIMITS,
             )
             imgs.append(img)
 
